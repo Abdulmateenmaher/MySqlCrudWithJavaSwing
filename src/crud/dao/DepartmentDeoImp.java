@@ -55,13 +55,14 @@ public class DepartmentDeoImp implements DaoService<Department> {
     }
 
     @Override
-    public int addData(Department obj) throws SQLException, ClassNotFoundException {
+    public  int addData(Department obj) throws SQLException, ClassNotFoundException {
 
         int result=0;
-        String query = "insert into tbldepartment values(?,?)";
+        String query = "insert into tbldepartment(name,description) values(?,?)";
         try(Connection conn = MySQLConnection.getConnection();){
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, obj.getName());
+            ps.setString(2,obj.getDescription());
             if(ps.executeUpdate()!=0){
                 conn.commit();
                 result = 1;
@@ -77,7 +78,20 @@ public class DepartmentDeoImp implements DaoService<Department> {
 
     @Override
     public int deleteData(Department obj) throws SQLException, ClassNotFoundException {
-        return 0;
+        int result= 0;
+        String QUERY="delete from tbldepartment where departmentId=?";
+
+        Connection conn = MySQLConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(QUERY);
+            ps.setInt(1, obj.getId());
+            if(ps.executeUpdate()!=0){
+                conn.commit();
+                return 1;
+            }else {
+                conn.rollback();
+            }
+            return result;
+
     }
 
     @Override
